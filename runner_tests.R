@@ -1,0 +1,5 @@
+library(testthat)
+library(pmrmPlus)
+setwd("C:/Users/Admin/.cline/data/workspaces/chat/pmrmPlus")
+test_dir("tests/testthat", reporter = "summary")
+cat("TESTS_DONE\n")

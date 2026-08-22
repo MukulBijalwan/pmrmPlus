@@ -1,0 +1,36 @@
+---
+title: "Alzheimer's Trial: Linear Progression with Delayed Treatment Onset"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Alzheimer's Trial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+This vignette analyzes a simulated ADNI-style trial using
+`pmrm_delayed()` with profile-likelihood delay estimation.
+
+```{r setup}
+library(pmrmPlus)
+data(adni_simulated)
+
+fit <- tryCatch(
+  pmrm_delayed(adas_cog ~ time * trt, data = adni_simulated,
+               delay_grid = seq(0, 18, by = 3), lambda = 0.5),
+  error = function(e) e
+)
+if (!inherits(fit, "error")) {
+  print(fit)
+  s <- summary(fit)
+  head(s$t_table)
+} else {
+  message("Demo fit skipped: ", conditionMessage(fit))
+}
+```
+
+The profile log-likelihood and its chi-squared threshold give an
+approximate confidence interval for the onset delay.

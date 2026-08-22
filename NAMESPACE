@@ -1,0 +1,52 @@
+# pmrmPlus NAMESPACE
+
+## models
+export(pmrm_nlme)
+export(delayed_effect)
+export(pmrm_delayed)
+export(pmrm_joint)
+export(pmrm_competing)
+export(biomarker_dosing_rule)
+export(pkpd_concentration)
+export(emax_biomarker)
+export(default_priors)
+
+## simulation
+export(simulate_progression_trial)
+export(simulate_joint_trial)
+export(power_pmrm)
+export(find_sample_size)
+export(scenario_optimistic)
+export(scenario_base)
+export(scenario_pessimistic)
+export(simulate_biomarker)
+export(initialize_subjects)
+
+## inference
+export(fit_pmrm)
+export(parametric_bootstrap)
+export(predict.pmrm_nlme)
+export(population_trajectory)
+
+## diagnostics
+export(goodness_of_fit)
+export(check_convergence)
+export(vpc)
+
+## methods
+export(summary.pmrm_delayed)
+export(plot.pmrm_delayed)
+export(print.pmrm_delayed)
+
+S3method(predict, pmrm_nlme)
+S3method(summary, pmrm_delayed)
+S3method(print, pmrm_delayed)
+S3method(plot, pmrm_delayed)
+
+importFrom(stats, as.formula, coef, complete.cases, dnorm, fitted,
+           formula, logLik, model.frame, model.matrix, na.omit,
+           optim, pchisq, pexp, predict, pweibull, qchisq, quantile,
+           rexp, rnorm, runif, sd, setNames, simulate, terms, update,
+           var, vcov)
+importFrom(utils, head, tail)
+importFrom(graphics, abline, lines, plot, points)

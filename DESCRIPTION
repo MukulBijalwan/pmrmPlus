@@ -1,0 +1,41 @@
+Package: pmrmPlus
+Type: Package
+Title: Extended Progression Models for Repeated Measures
+Version: 0.1.0
+Authors@R: person("Mukul", "Bijalwan", email = "mukulbijalwan555@gmail.com",
+    role = c("aut", "cre"))
+Description: Extended progression models for repeated measures in progressive
+    disease clinical trials. Provides nonlinear mixed-effects progression
+    models (linear, plateau, Emax, exponential decay), delayed treatment
+    onset estimation by profile likelihood, joint longitudinal-survival
+    models for informative dropout, competing-risks extensions,
+    biomarker-informed adaptive dosing rules, and simulation-based power
+    and sample-size calculation.
+License: GPL (>= 3)
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports:
+    nlme,
+    survival,
+    MASS,
+    mvtnorm,
+    ggplot2,
+    stats,
+    graphics,
+    utils
+Suggests:
+    lme4,
+    rstan,
+    rstanarm,
+    saemix,
+    NIMBLE,
+    simsurv,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    covr
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+URL: https://github.com/MukulBijalwan/pmrmPlus
+BugReports: https://github.com/MukulBijalwan/pmrmPlus/issues
+RoxygenNote: 7.3.2

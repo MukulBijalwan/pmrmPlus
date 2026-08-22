@@ -1,0 +1,35 @@
+---
+title: "Simulation-Based Sample Size with Delayed Onset"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sample Size Simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r setup}
+library(pmrmPlus)
+```
+
+Ignoring a 6-month delayed onset inflates the apparent treatment effect
+and underestimates the required sample size. `power_pmrm()` simulates
+the full operating characteristic:
+
+```{r}
+p <- power_pmrm(n_per_arm = 100, effect_size = -0.5, delay = 6,
+                n_sims = 50, seed = 1)
+p[c("power", "bias", "non_convergence_rate")]
+```
+
+Search a grid of sample sizes (keep simulations small for the demo):
+
+```{r}
+ss <- find_sample_size(target_power = 0.8, n_grid = c(80, 120),
+                       effect_size = -0.5, delay = 6,
+                       n_sims = 30, seed = 2)
+ss$power_curve
+```
