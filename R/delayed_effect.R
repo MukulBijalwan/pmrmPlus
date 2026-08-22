@@ -73,11 +73,12 @@ pmrm_delayed <- function(formula, data,
     trt_col <- grep("^trt$", names(d), ignore.case = TRUE)[1]
     d$trt_eff <- as.numeric(d[[trt_col]]) *
       delayed_effect(d$time, delay = delay, shape = shape, lambda = lambda)
-    tryCatch(
-      pmrm_nlme(update(formula, . ~ . + trt_eff), data = d,
-                progression = progression, ...),
+    f <- tryCatch(
+      suppressWarnings(pmrm_nlme(update(formula, . ~ . + trt_eff), data = d,
+                                 progression = progression, ...)),
       error = function(e) NULL
     )
+    if (!inherits(f, "lme")) NULL else f
   }
 
   if (delay_estimation == "fixed") {

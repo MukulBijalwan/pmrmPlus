@@ -51,8 +51,25 @@ pmrm_nlme <- function(formula,
       rhs_clean <- gsub(paste0("\\b", subject_var, "\\b"), "subject", rhs_clean)
       f <- as.formula(paste(resp, "~", rhs_clean))
       rf <- as.formula("~ 1 + time | subject")
-      nlme::lme(f, data = data, random = rf, weights = weights,
-                na.action = na.omit, method = "REML", ...)
+      ctl <- nlme::lmeControl(maxIter = 200, msMaxIter = 200,
+                              msVerbose = FALSE, optMaxiter = 200)
+      f_fit <- tryCatch(
+        nlme::lme(f, data = data, random = rf, weights = weights,
+                  na.action = na.omit, method = "REML", control = ctl, ...),
+        error = function(e1) {
+          # retry with simplified random effects (random intercept only)
+          tryCatch(
+            nlme::lme(f, data = data, random = ~ 1 | subject,
+                      weights = weights, na.action = na.omit,
+                      method = "REML", control = ctl, ...),
+            error = function(e2) NULL
+          )
+        }
+      )
+      if (is.null(f_fit)) {
+        stop("lme failed to converge for this dataset")
+      }
+      f_fit
     },
     {
       if (is.null(start)) start <- default_start(progression, data)

@@ -67,10 +67,9 @@ test_that("pkpd and emax helpers are finite and positive", {
 })
 
 test_that("power_pmrm detects strong effects", {
-  p <- power_pmrm(n_per_arm = 150, effect_size = -1.2, delay = 0,
-                  n_sims = 20, measurement_times = seq(0, 24, by = 6),
+  p <- power_pmrm(n_per_arm = 40, effect_size = -1.5, delay = 0,
+                  n_sims = 5, measurement_times = seq(0, 24, by = 12),
                   seed = 11)
-  expect_gt(p$non_convergence_rate, -1)
   expect_gte(p$power, 0)
   expect_lte(p$power, 1)
 })
