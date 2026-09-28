@@ -15,7 +15,7 @@ Description: Extended progression models for repeated measures in progressive
     models for informative dropout, competing-risks extensions,
     biomarker-informed adaptive dosing rules, and simulation-based power
     and sample-size calculation.
-License: GPL (>= 3) + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports:
@@ -26,12 +26,7 @@ Imports:
     graphics,
     utils
 Suggests:
-    lme4,
     rstan,
-    rstanarm,
-    saemix,
-    NIMBLE,
-    simsurv,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,

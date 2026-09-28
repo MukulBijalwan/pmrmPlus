@@ -27,8 +27,10 @@
 #'   the column name used by the shipped data sets).
 #' @param event_var Name of the event indicator column (1 = event).
 #' @param association One of "current_value", "slope", "both".
-#' @param surv_model Baseline hazard family: "weibull" or "exponential".
-#'   If "stan_jm" and rstanarm is installed, a Bayesian joint model is fit.
+#' @param surv_model Baseline hazard family: \code{"weibull"} or
+#'   \code{"exponential"}. The legacy value \code{"stan_jm"} is accepted for
+#'   backward compatibility but currently warns and falls back to
+#'   \code{"weibull"}.
 #' @param ... Additional arguments passed to the fitting engine.
 #' @return Object of class \code{"pmrm_joint"} with elements \code{long_fit},
 #'   \code{surv_fit}, \code{association}, and helper summaries.
@@ -46,6 +48,12 @@ pmrm_joint <- function(long_formula,
                        ...) {
   association <- match.arg(association)
   surv_model <- match.arg(surv_model)
+
+  if (surv_model == "stan_jm") {
+    warning("Bayesian joint modelling ('surv_model = \"stan_jm\"') is not ",
+            "implemented; falling back to a Weibull survival submodel.")
+    surv_model <- "weibull"
+  }
 
   data <- as.data.frame(data)
 

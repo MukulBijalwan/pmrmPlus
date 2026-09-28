@@ -44,8 +44,10 @@ the column name used by the shipped data sets).}
 
 \item{association}{One of "current_value", "slope", "both".}
 
-\item{surv_model}{Baseline hazard family: "weibull" or "exponential".
-If "stan_jm" and rstanarm is installed, a Bayesian joint model is fit.}
+\item{surv_model}{Baseline hazard family: \code{"weibull"} or
+\code{"exponential"}. The legacy value \code{"stan_jm"} is accepted for
+backward compatibility but currently warns and falls back to
+\code{"weibull"}.}
 
 \item{...}{Additional arguments passed to the fitting engine.}
 }
