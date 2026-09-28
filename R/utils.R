@@ -25,4 +25,22 @@ to_event_data <- function(long_data,
   long_data[uq, keep, drop = FALSE]
 }
 
+#' Extract the right-hand side of a survival formula as text
+#'
+#' Accepts one-sided (\code{~ x}) or two-sided (\code{Surv(...) ~ x})
+#' formulas and returns the right-hand side, so callers can rebuild a
+#' survival formula with additional association terms.
+#'
+#' @param f A formula.
+#' @return A character string with the right-hand side (defaults to \code{"1"}).
+#' @noRd
+surv_rhs_text <- function(f) {
+  if (length(f) == 3L) return(paste(deparse(f[[3L]]), collapse = ""))
+  if (length(f) == 2L) return(paste(deparse(f[[2L]]), collapse = ""))
+  "1"
+}
+
 `%||%_u` <- NULL  # reserved namespace placeholder
+
+# Names referenced through ggplot2 non-standard evaluation.
+utils::globalVariables(c(".data", ".pred", "delay", "loglik", "time"))

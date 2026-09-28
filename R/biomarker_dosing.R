@@ -118,6 +118,7 @@ simulate_biomarker <- function(subjects, visit, visit_interval = 4,
 #' @param visit_interval Weeks between visits.
 #' @param dropout_rate Annual dropout hazard.
 #' @param target_range Target biomarker range for dosing.
+#' @param dose_levels Allowed dose levels.
 #' @param seed Random seed.
 #' @return A list with long-format outcomes \code{$long_data} and final
 #'   subject states \code{$subjects}.

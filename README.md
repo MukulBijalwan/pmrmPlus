@@ -36,6 +36,9 @@ p <- power_pmrm(n_per_arm = 100, effect_size = -0.5, delay = 6, n_sims = 100)
 p$power
 ```
 
-## Author
+## Authors
 
-Mukul Bijalwan (mukulbijalwan555@gmail.com)
+* Mukul Bijalwan (mukulbijalwan555@gmail.com) --
+  ORCID [0009-0001-3040-6912](https://orcid.org/0009-0001-3040-6912)
+* Gunjan Aggrwal
+* Mukul Jain

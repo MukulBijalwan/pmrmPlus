@@ -15,13 +15,14 @@ check_convergence <- function(object, ...) {
   UseMethod("check_convergence")
 }
 
+#' @rdname check_convergence
 #' @export
 check_convergence.default <- function(object, ...) {
   out <- list()
   if (inherits(object, "lme") || inherits(object, "gls")) {
     out$opt_message <- object$optInfo %||%
       tryCatch(object$iterations, error = function(e) NULL)
-    vc <- stats::VarCorr(object)
+    vc <- nlme::VarCorr(object)
     out$variance_components <- vc
     out$converged <- !is.null(object$apVar) || TRUE
   } else if (is.list(object) && length(object) > 1 &&

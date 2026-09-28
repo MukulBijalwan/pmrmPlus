@@ -73,3 +73,77 @@ test_that("power_pmrm detects strong effects", {
   expect_gte(p$power, 0)
   expect_lte(p$power, 1)
 })
+
+# --- regression tests -------------------------------------------------------
+
+test_that("power_pmrm recovers the treatment effect", {
+  # Regression: the treatment estimate was silently dropped because the
+  # unexported nlme:::summary.lme() was called directly, leaving power at 0.
+  p <- power_pmrm(n_per_arm = 40, effect_size = -1.5, delay = 0,
+                  n_sims = 5, measurement_times = seq(0, 24, by = 12),
+                  seed = 11)
+  expect_gt(p$power, 0)
+  expect_lt(p$mean_estimate, 0)
+  expect_equal(p$non_convergence_rate, 0)
+})
+
+test_that("nonlinear progression shapes fit with subject-level random effects", {
+  # Regression: the nonlinear branch built an invalid `random` specification
+  # (pdDiag(<character vector>), groups = ~trt), so all shapes errored.
+  gen <- function(mt) {
+    set.seed(11)
+    times <- seq(0, 24, by = 3)
+    do.call(rbind, lapply(1:60, function(i) {
+      data.frame(id = i, time = times, trt = as.integer(i > 30),
+                 y = mt(times) + rnorm(length(times), sd = 1.2))
+    }))
+  }
+  specs <- list(
+    plateau     = list(mt = function(t) 20 - 0.9 * pmin(t, 12),
+                       start = list(b0 = 20, b1 = -1, tau = 12)),
+    emax        = list(mt = function(t) 20 - 20 * t / (5 + t),
+                       start = list(b0 = 20, bmax = -20, ed50 = 5)),
+    exponential = list(mt = function(t) 20 + 14 * (1 - exp(-0.25 * t)),
+                       start = list(b0 = 20, binf = 34, lambda = 0.25))
+  )
+  for (prog in names(specs)) {
+    sp <- specs[[prog]]
+    fit <- tryCatch(
+      pmrm_nlme(y ~ time * trt, data = gen(sp$mt), progression = prog,
+                start = sp$start),
+      error = function(e) NULL)
+    expect_false(is.null(fit), info = prog)
+    if (!is.null(fit)) {
+      expect_true("pmrm_nlme" %in% class(fit), info = prog)
+      # one random-effect row per subject, not per treatment arm
+      expect_equal(nrow(nlme::random.effects(fit)), 60, info = prog)
+    }
+  }
+})
+
+test_that("summary() dispatches for joint and competing-risks fits", {
+  # Regression: summary.pmrm_joint / summary.pmrm_competing were defined but
+  # never registered, so summary() fell through to summary.default.
+  data(parkinsons_simulated, package = "pmrmPlus")
+  fit <- tryCatch(
+    suppressWarnings(pmrm_joint(
+      updrs ~ time * trt,
+      survival::Surv(time_to_dropout, dropout) ~ trt,
+      data = parkinsons_simulated, association = "current_value")),
+    error = function(e) NULL)
+  if (!is.null(fit)) {
+    s <- summary(fit)
+    expect_false(inherits(s, "summaryDefault"))
+    expect_true("association_coefficients" %in% names(s))
+  }
+})
+
+test_that("diagnostics work when the response is not called 'y'", {
+  sim <- simulate_progression_trial(n_control = 20, n_treatment = 20,
+                                    times = seq(0, 24, by = 6), seed = 2)
+  names(sim)[names(sim) == "y"] <- "score"
+  fit <- pmrm_nlme(score ~ time * trt, data = sim)
+  v <- vpc(fit, n_sims = 3, seed = 1)
+  expect_true(all(c("observed", "sim_median") %in% names(v)))
+  expect_true(is.finite(goodness_of_fit(fit)$rmse))
+})

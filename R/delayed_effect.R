@@ -117,7 +117,7 @@ summary.pmrm_delayed <- function(object, ...) {
   fx <- tryCatch(nlme::fixed.effects(object),
                  error = function(e) tryCatch(stats::coef(object),
                                               error = function(e2) NULL))
-  tt <- tryCatch(summary.lme(object)$tTable, error = function(e) NULL)
+  tt <- tryCatch(summary(object)$tTable, error = function(e) NULL)
   out <- list(
     fixed_effects = fx,
     delay_estimate = object$delay_estimate,

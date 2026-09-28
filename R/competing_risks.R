@@ -15,7 +15,8 @@
 #' @param data Long-format data frame.
 #' @param time_var Name of longitudinal time column.
 #' @param subject_var Name of subject id column.
-#' @param event_time_var Column holding time-to-event.
+#' @param event_time_var Column holding time-to-event (defaults to the column
+#'   name used by the shipped data sets).
 #' @param event_var Column holding the event code: 0 = censored,
 #'   1..K = cause.
 #' @param causes Character vector of cause labels in code order.
@@ -28,7 +29,7 @@ pmrm_competing <- function(long_formula,
                            data,
                            time_var = "time",
                            subject_var = "id",
-                           event_time_var = "time_to_event",
+                           event_time_var = "time_to_dropout",
                            event_var = "event",
                            causes = c("dropout", "death"),
                            association = c("current_value", "slope", "both"),
@@ -43,44 +44,52 @@ pmrm_competing <- function(long_formula,
   fe <- stats::coef(summary(long_fit))[, 1]
   subj_ids <- rownames(eb)
 
-  ev <- data[!duplicated(data[[subject_var]]),
-             intersect(c(subject_var, event_time_var, event_var), names(data)),
-             drop = FALSE]
-  names(ev) <- c("id", "time_to_event", "event")
-  ev$event <- as.integer(ev$event)
-
-  m <- match(as.character(ev$id), subj_ids)
-  ev$.b0 <- eb[m, "(Intercept)"]
-  ev$.b1 <- eb[m, "time"]
-  ev$.y_current <- fe[["(Intercept)"]] + ev$.b0 +
-    (fe[["time"]] + ev$.b1) * ev$time_to_event
-
   assoc_names <- switch(association,
     "current_value" = ".y_current",
     "slope"         = ".b1",
     "both"          = c(".y_current", ".b1"))
 
+  # ---- normalise the survival formulas ----
   n_causes <- length(causes)
-
   if (!is.list(surv_formulas)) {
-    base_rhs <- paste(deparse(surv_formulas[[3]]), collapse = "")
+    base_rhs <- surv_rhs_text(surv_formulas)
     surv_formulas <- setNames(replicate(n_causes, as.formula(paste("~", base_rhs)),
                                         simplify = FALSE), causes)
   }
   stopifnot(length(surv_formulas) == n_causes)
+  rhs_txts <- vapply(surv_formulas, surv_rhs_text, character(1))
+
+  # ---- per-subject event data (including survival covariates) ----
+  covars <- unique(unlist(lapply(surv_formulas, all.vars)))
+  ev <- data[!duplicated(data[[subject_var]]),
+             unique(intersect(c(subject_var, event_time_var, event_var, covars),
+                              names(data))),
+             drop = FALSE]
+  names(ev)[names(ev) == subject_var] <- "id"
+  names(ev)[names(ev) == event_time_var] <- "time_to_event"
+  names(ev)[names(ev) == event_var] <- "event"
+  if (!all(c("id", "time_to_event", "event") %in% names(ev))) {
+    stop("Could not locate the subject / event-time / event columns in the ",
+         "data. Set 'subject_var', 'event_time_var' and 'event_var' to match ",
+         "your column names.")
+  }
+  ev$event <- as.integer(ev$event)
+
+  m <- match(as.character(ev$id), subj_ids)
+  # The longitudinal submodel may fall back to a random intercept only, in
+  # which case the empirical-Bayes random slope is zero.
+  ev$.b0 <- if ("(Intercept)" %in% colnames(eb)) eb[m, "(Intercept)"] else 0
+  ev$.b1 <- if ("time" %in% colnames(eb)) eb[m, "time"] else 0
+  fe_b0 <- if ("(Intercept)" %in% names(fe)) fe[["(Intercept)"]] else 0
+  fe_b1 <- if ("time" %in% names(fe)) fe[["time"]] else 0
+  ev$.y_current <- fe_b0 + ev$.b0 + (fe_b1 + ev$.b1) * ev$time_to_event
 
   # ---- cause-specific hazards ----
   cause_fits <- lapply(seq_len(n_causes), function(k) {
     ek <- as.integer(ev$event == k)
-    rhs <- paste(deparse(surv_formulas[[k]][[2]]), collapse = "") # may be NULL
-    rhs_txt <- tryCatch(paste(deparse(surv_formulas[[k]])[[2]], collapse = ""),
-                        error = function(e) NULL)
-    if (is.null(rhs_txt)) {
-      ff <- surv_formulas[[k]]
-      rhs_txt <- if (length(ff) == 3) paste(deparse(ff[[3]]), collapse = "") else "1"
-    }
     f_k <- as.formula(paste("Surv(time_to_event,", paste0("ev_", k), ") ~",
-                            rhs_txt, "+", paste(assoc_names, collapse = " + ")))
+                            rhs_txts[[k]], "+",
+                            paste(assoc_names, collapse = " + ")))
     env <- new.env(parent = environment())
     assign(paste0("ev_", k), ek, envir = env)
     environment(f_k) <- env

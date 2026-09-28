@@ -13,8 +13,8 @@
 #'
 #' @param long_formula Longitudinal mixed-model formula, e.g.
 #'   \code{y ~ time * trt}.
-#' @param surv_formula Survival formula, e.g. \code{Surv(time_to_event,
-#'   event) ~ trt}.
+#' @param surv_formula Survival formula, e.g. \code{Surv(time_to_dropout,
+#'   dropout) ~ trt}.
 #' @param data Long-format data frame with one row per observation; the
 #'   event data are extracted from \code{event_data} if supplied, otherwise
 #'   from per-subject columns in \code{data}.
@@ -23,7 +23,8 @@
 #'   \code{surv_formula}.
 #' @param time_var Name of the longitudinal time column.
 #' @param subject_var Name of the subject identifier column.
-#' @param event_time_var Name of the column holding time-to-event.
+#' @param event_time_var Name of the column holding time-to-event (defaults to
+#'   the column name used by the shipped data sets).
 #' @param event_var Name of the event indicator column (1 = event).
 #' @param association One of "current_value", "slope", "both".
 #' @param surv_model Baseline hazard family: "weibull" or "exponential".
@@ -38,7 +39,7 @@ pmrm_joint <- function(long_formula,
                        event_data = NULL,
                        time_var = "time",
                        subject_var = "id",
-                       event_time_var = "time_to_event",
+                       event_time_var = "time_to_dropout",
                        event_var = "dropout",
                        association = c("current_value", "slope", "both"),
                        surv_model = c("weibull", "exponential", "stan_jm"),
@@ -59,19 +60,28 @@ pmrm_joint <- function(long_formula,
   # EB current value at each subject's event/censoring time
   ev <- if (!is.null(event_data)) as.data.frame(event_data) else {
     uq <- !duplicated(data[[subject_var]])
-    keep <- c(subject_var, event_time_var, event_var)
-    keep <- intersect(keep, names(data))
+    keep <- c(subject_var, event_time_var, event_var,
+              all.vars(surv_formula[[3]]))
+    keep <- unique(intersect(keep, names(data)))
     data[uq, keep, drop = FALSE]
   }
   names(ev)[names(ev) == subject_var] <- "id"
   names(ev)[names(ev) == event_time_var] <- "time_to_event"
   names(ev)[names(ev) == event_var] <- "dropout"
+  if (!all(c("id", "time_to_event", "dropout") %in% names(ev))) {
+    stop("Could not locate the subject / event-time / event columns in the ",
+         "data. Supply 'event_data', or set 'subject_var', ",
+         "'event_time_var' and 'event_var' to match your column names.")
+  }
 
   m <- match(as.character(ev$id), subj_ids)
-  ev$.b0 <- eb[m, "(Intercept)"]
-  ev$.b1 <- eb[m, "time"]
-  ev$.y_current <- fe[["(Intercept)"]] + ev$.b0 +
-    (fe[["time"]] + ev$.b1) * ev$time_to_event
+  # The longitudinal submodel may fall back to a random intercept only, in
+  # which case the empirical-Bayes random slope is zero.
+  ev$.b0 <- if ("(Intercept)" %in% colnames(eb)) eb[m, "(Intercept)"] else 0
+  ev$.b1 <- if ("time" %in% colnames(eb)) eb[m, "time"] else 0
+  fe_b0 <- if ("(Intercept)" %in% names(fe)) fe[["(Intercept)"]] else 0
+  fe_b1 <- if ("time" %in% names(fe)) fe[["time"]] else 0
+  ev$.y_current <- fe_b0 + ev$.b0 + (fe_b1 + ev$.b1) * ev$time_to_event
 
   assoc_names <- switch(association,
     "current_value" = ".y_current",
@@ -80,7 +90,7 @@ pmrm_joint <- function(long_formula,
   )
 
   # ---- stage 2: survival submodel ----
-  rhs_txt <- paste(deparse(surv_formula[[3]]), collapse = "")
+  rhs_txt <- surv_rhs_text(surv_formula)
   f2 <- as.formula(paste("Surv(time_to_event, dropout) ~",
                          rhs_txt, "+", paste(assoc_names, collapse = " + ")))
   dist <- if (surv_model == "exponential") "exponential" else "weibull"
@@ -103,7 +113,7 @@ summary.pmrm_joint <- function(object, ...) {
   list(
     progression = list(
       fixed_effects = stats::coef(summary(object$long_fit))[, 1],
-      random_effects_sd = stats::VarCorr(object$long_fit)
+      random_effects_sd = nlme::VarCorr(object$long_fit)
     ),
     survival = stats::coef(object$surv_fit),
     association_structure = object$association,

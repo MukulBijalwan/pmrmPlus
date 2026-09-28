@@ -12,6 +12,10 @@ export(pkpd_concentration)
 export(emax_biomarker)
 export(default_priors)
 
+## utilities
+export(subject_summaries)
+export(to_event_data)
+
 ## simulation
 export(simulate_progression_trial)
 export(simulate_joint_trial)
@@ -43,11 +47,14 @@ S3method(predict, pmrm_nlme)
 S3method(summary, pmrm_delayed)
 S3method(print, pmrm_delayed)
 S3method(plot, pmrm_delayed)
+S3method(summary, pmrm_joint)
+S3method(summary, pmrm_competing)
+S3method(check_convergence, default)
 
-importFrom(stats, as.formula, coef, complete.cases, dnorm, fitted,
-           formula, logLik, model.frame, model.matrix, na.omit,
-           optim, pchisq, pexp, predict, pweibull, qchisq, quantile,
-           rexp, rnorm, runif, sd, setNames, simulate, terms, update,
-           var, vcov)
+importFrom(stats, acf, as.formula, coef, complete.cases, delete.response,
+           dnorm, fitted, formula, logLik, median, model.frame,
+           model.matrix, na.omit, optim, pchisq, pexp, predict, pweibull,
+           qchisq, quantile, rexp, rnorm, runif, sd, setNames, simulate,
+           terms, time, update, var, vcov)
 importFrom(utils, head, tail)
 importFrom(graphics, abline, lines, plot, points)

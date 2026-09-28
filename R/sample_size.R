@@ -40,7 +40,7 @@ power_pmrm <- function(n_per_arm,
       error = function(e) NULL
     )
     if (!is.null(fit)) {
-      tt <- tryCatch(summary.lme(fit)$tTable, error = function(e) NULL)
+      tt <- tryCatch(summary(fit)$tTable, error = function(e) NULL)
       row_name <- grep("time:trt|trt:time", rownames(tt), value = TRUE)[1]
       if (!is.na(row_name)) {
         estimates[s] <- tt[row_name, "Value"]

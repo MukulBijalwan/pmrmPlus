@@ -85,15 +85,23 @@ pmrm_nlme <- function(formula,
       dat <- data
       dat$y <- as.numeric(dat[[all.vars(formula[[2]])[1]]])
       start_vec <- unlist(lapply(params, function(p) as.numeric(start[[p]])))
+      # nlme() expects a two-sided "params ~ 1" random formula (unlike lme()'s
+      # one-sided "~ x | group" form); pdDiag() gives an uncorrelated
+      # diagonal random-effects covariance matrix.
+      ran_full <- nlme::pdDiag(
+        as.formula(paste(paste(params, collapse = " + "), "~ 1")))
+      ran_intercept <- nlme::pdDiag(as.formula(paste(params[1L], "~ 1")))
       tryCatch({
         nlme::nlme(nl_form, data = dat, fixed = fixed_f,
-                   random = pdDiag(params), groups = ~ trt,
+                   random = ran_full, groups = ~ subject,
                    start = start_vec, weights = weights,
                    na.action = na.omit, ...)
       }, error = function(e) {
+        # retry with a random intercept on the baseline parameter only
         nlme::nlme(nl_form, data = dat, fixed = fixed_f,
-                   random = pdDiag(params), start = start_vec,
-                   weights = weights, na.action = na.omit, ...)
+                   random = ran_intercept, groups = ~ subject,
+                   start = start_vec, weights = weights,
+                   na.action = na.omit, ...)
       })
     }
   )

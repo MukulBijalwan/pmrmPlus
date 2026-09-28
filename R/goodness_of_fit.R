@@ -42,8 +42,10 @@ vpc <- function(fit, n_sims = 50, probs = c(0.05, 0.5, 0.95), seed = NULL) {
            numeric(1))
   }, numeric(length(probs))))
 
+  resp <- all.vars(stats::formula(fit))[1]
+  if (!resp %in% names(dat)) resp <- "y"
   obs_q <- vapply(probs, function(p)
-    stats::quantile(dat$y, p, na.rm = TRUE), numeric(1))
+    stats::quantile(dat[[resp]], p, na.rm = TRUE), numeric(1))
 
   data.frame(
     prob = paste0("q", probs),
