@@ -31,3 +31,8 @@ Numeric vector in [0, 1] giving the fraction of the full effect
 Computes the fractional treatment effect at time \code{time} given
 treatment initiation time \code{trt_time} and a delay \code{delay}.
 }
+\examples{
+t <- seq(0, 12, by = 2)
+delayed_effect(t, delay = 4, shape = "step")
+delayed_effect(t, delay = 0, shape = "exponential", lambda = 0.1)
+}

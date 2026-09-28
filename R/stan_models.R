@@ -7,6 +7,8 @@
 #' @return Named list of prior family and parameter values for fixed
 #'   effects, random-effect SDs, residual SD, association parameters, and
 #'   survival shape.
+#' @examples
+#' default_priors(scale = 5)
 #' @export
 default_priors <- function(scale = 1) {
   list(

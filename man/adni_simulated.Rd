@@ -27,4 +27,9 @@ Longitudinal data from a simulated ADNI-style Alzheimer's disease trial
 with linear progression, a treatment effect with delayed onset, and
 subject-level dropout information.
 }
+\examples{
+head(adni_simulated)
+table(adni_simulated$trt)
+summary(adni_simulated$adas_cog)
+}
 \keyword{datasets}

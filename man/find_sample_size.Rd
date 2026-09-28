@@ -19,3 +19,10 @@ List with \code{optimal_n} and a \code{power_curve} data frame.
 \description{
 Find sample size by simulation
 }
+\examples{
+ss <- find_sample_size(target_power = 0.8, n_grid = c(25, 50),
+                       effect_size = -1.5, delay = 0, n_sims = 5,
+                       measurement_times = seq(0, 24, by = 12), seed = 11)
+ss$optimal_n
+ss$power_curve
+}

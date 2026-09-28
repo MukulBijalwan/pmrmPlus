@@ -22,3 +22,10 @@ Numeric vector of predictions.
 \description{
 Predict from a fitted progression model
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+nd <- data.frame(time = c(0, 6, 12, 24), trt = c(0, 0, 1, 1))
+predict(fit, newdata = nd)                 # population level
+head(predict(fit, level = "individual"))   # subject-specific
+}

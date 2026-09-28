@@ -6,6 +6,12 @@
 #' @param bins Number of bins for residual quantile grouping.
 #' @return List with population residuals, conditional (EB) residuals,
 #'   RMSE, and information criteria.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' g <- goodness_of_fit(fit)
+#' g$rmse
+#' g$AIC
 #' @export
 goodness_of_fit <- function(fit, bins = 10) {
   pres <- stats::residuals(fit, type = "response", level = 0)
@@ -27,6 +33,11 @@ goodness_of_fit <- function(fit, bins = 10) {
 #' @param probs Quantiles to report.
 #' @param seed Random seed.
 #' @return Data frame of observed vs simulated quantiles by time bin.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20,
+#'                                   times = seq(0, 24, by = 6), seed = 2)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' vpc(fit, n_sims = 5, seed = 1)
 #' @export
 vpc <- function(fit, n_sims = 50, probs = c(0.05, 0.5, 0.95), seed = NULL) {
   if (!is.null(seed)) set.seed(seed)

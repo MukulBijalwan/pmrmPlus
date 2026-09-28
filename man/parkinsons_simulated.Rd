@@ -28,4 +28,9 @@ which progression drives an informative dropout process, so that faster
 progressors leave the trial earlier. Intended for use with
 \code{pmrm_joint()} and \code{pmrm_competing()}.
 }
+\examples{
+head(parkinsons_simulated)
+with(parkinsons_simulated, table(trt, dropout))
+summary(parkinsons_simulated$updrs)
+}
 \keyword{datasets}

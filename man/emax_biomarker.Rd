@@ -18,3 +18,7 @@ emax_biomarker(conc, b_baseline = 100, emax = 30, ec50 = 5)
 \description{
 Emax biomarker model
 }
+\examples{
+conc <- seq(0, 20, by = 2)
+emax_biomarker(conc, b_baseline = 100, emax = 30, ec50 = 5)
+}

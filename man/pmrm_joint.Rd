@@ -58,3 +58,11 @@ Object of class \code{"pmrm_joint"} with elements \code{long_fit},
 \description{
 Fit a joint longitudinal-survival model
 }
+\examples{
+fit <- pmrm_joint(updrs ~ time * trt,
+                  Surv(time_to_dropout, dropout) ~ trt,
+                  data = parkinsons_simulated,
+                  association = "current_value")
+class(fit)
+fit$assoc_terms
+}

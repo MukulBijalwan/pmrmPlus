@@ -47,3 +47,14 @@ delay is estimated by grid search over \code{delay_grid}, selecting the
 value maximizing log-likelihood; an approximate confidence set is derived
 from the chi-squared threshold (log-lik drop of qchisq(0.95, 1)/2).
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
+                                  effect_size = -0.8, delay = 6,
+                                  times = seq(0, 24, by = 6),
+                                  residual_sd = 1.5, random_sd = 0.2, seed = 7)
+fit <- pmrm_delayed(y ~ time * trt, data = sim,
+                    delay_estimation = "profile",
+                    delay_grid = seq(0, 12, by = 4), lambda = 0.5)
+fit$delay_estimate
+summary(fit)$delay_ci
+}

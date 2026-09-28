@@ -23,3 +23,7 @@ Concentration at \code{time}.
 \description{
 One-compartment oral PK concentration and an Emax biomarker response.
 }
+\examples{
+t <- seq(0, 24, by = 4)
+pkpd_concentration(t, dose = 100)
+}

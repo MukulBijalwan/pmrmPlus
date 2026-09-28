@@ -34,3 +34,7 @@ Named numeric vector of observed biomarkers.
 \description{
 Simulate biomarker measurements under the PK/PD model
 }
+\examples{
+subj <- initialize_subjects(6, n_visits = 4, seed = 42)
+simulate_biomarker(subj, visit = 2)
+}

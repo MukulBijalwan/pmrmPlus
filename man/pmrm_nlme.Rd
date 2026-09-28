@@ -49,3 +49,8 @@ Fits repeated-measures progression data using one of four common shapes
 (linear, plateau, emax, exponential). Linear models use \code{nlme::lme};
 nonlinear shapes use \code{nlme::nlme}.
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+summary(fit)$tTable
+}

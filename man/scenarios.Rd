@@ -19,3 +19,8 @@ A list of simulation arguments.
 Named scenario lists consumed by \code{power_pmrm()} via
   \code{do.call}.
 }
+\examples{
+scenario_optimistic()
+scenario_base()
+scenario_pessimistic()
+}

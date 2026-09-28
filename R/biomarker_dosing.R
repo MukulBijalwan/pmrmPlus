@@ -10,6 +10,9 @@
 #' @param ke Elimination rate constant.
 #' @param V Volume of distribution.
 #' @return Concentration at \code{time}.
+#' @examples
+#' t <- seq(0, 24, by = 4)
+#' pkpd_concentration(t, dose = 100)
 #' @export
 pkpd_concentration <- function(time, dose, ka = 0.5, ke = 0.1, V = 10) {
   (dose * ka) / (V * (ka - ke)) * (exp(-ke * time) - exp(-ka * time))
@@ -21,6 +24,9 @@ pkpd_concentration <- function(time, dose, ka = 0.5, ke = 0.1, V = 10) {
 #' @param b_baseline Baseline biomarker level.
 #' @param emax Maximum effect.
 #' @param ec50 Concentration giving half-maximal effect.
+#' @examples
+#' conc <- seq(0, 20, by = 2)
+#' emax_biomarker(conc, b_baseline = 100, emax = 30, ec50 = 5)
 #' @export
 emax_biomarker <- function(conc, b_baseline = 100, emax = 30, ec50 = 5) {
   b_baseline + emax * conc / (ec50 + conc)
@@ -37,6 +43,10 @@ emax_biomarker <- function(conc, b_baseline = 100, emax = 30, ec50 = 5) {
 #' @param current_dose_idx Index of the subject's current dose.
 #' @return List with \code{new_dose}, \code{new_dose_idx}, and
 #'   \code{adjustment} ("up", "down", or "maintain").
+#' @examples
+#' biomarker_dosing_rule(130)  # above target range -> step the dose up
+#' biomarker_dosing_rule(70)   # below target range -> step the dose down
+#' biomarker_dosing_rule(100)  # inside the range -> keep the current dose
 #' @export
 biomarker_dosing_rule <- function(biomarker_value,
                                   target_range = c(80, 120),
@@ -68,6 +78,8 @@ biomarker_dosing_rule <- function(biomarker_value,
 #' @param trt_prob Probability of assignment to active treatment.
 #' @param seed Random seed.
 #' @return Data frame of subject-level attributes.
+#' @examples
+#' initialize_subjects(6, n_visits = 4, seed = 42)
 #' @export
 initialize_subjects <- function(n_subjects, n_visits = 12,
                                 dose_levels = c(0, 50, 100, 150, 200),
@@ -91,6 +103,9 @@ initialize_subjects <- function(n_subjects, n_visits = 12,
 #' @param noise_sd Residual measurement SD.
 #' @param emax,ec50,b_baseline Emax-model parameters.
 #' @return Named numeric vector of observed biomarkers.
+#' @examples
+#' subj <- initialize_subjects(6, n_visits = 4, seed = 42)
+#' simulate_biomarker(subj, visit = 2)
 #' @export
 simulate_biomarker <- function(subjects, visit, visit_interval = 4,
                                dose_levels = c(0, 50, 100, 150, 200),
@@ -122,6 +137,11 @@ simulate_biomarker <- function(subjects, visit, visit_interval = 4,
 #' @param seed Random seed.
 #' @return A list with long-format outcomes \code{$long_data} and final
 #'   subject states \code{$subjects}.
+#' @examples
+#' out <- pmrm_adaptive_trial(n_subjects = 12, n_visits = 4, seed = 1)
+#' head(out$long_data)
+#' # subjects whose dose was adapted at least once
+#' table(out$subjects$dose_idx)
 #' @export
 pmrm_adaptive_trial <- function(n_subjects,
                                 progression_model = list(intercept = 20, slope = 1.5,

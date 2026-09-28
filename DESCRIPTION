@@ -17,6 +17,7 @@ Description: Extended progression models for repeated measures in progressive
     and sample-size calculation.
 License: GPL (>= 3)
 Encoding: UTF-8
+LazyData: true
 Depends: R (>= 4.1.0)
 Imports:
     nlme,

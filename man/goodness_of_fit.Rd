@@ -18,3 +18,10 @@ List with population residuals, conditional (EB) residuals,
 \description{
 Goodness-of-fit summary
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+g <- goodness_of_fit(fit)
+g$rmse
+g$AIC
+}

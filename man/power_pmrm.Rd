@@ -42,3 +42,10 @@ List with power, mean estimate/SE, bias, MSE, and the
 \description{
 Simulation-based power for progression trials
 }
+\examples{
+p <- power_pmrm(n_per_arm = 30, effect_size = -1.5, delay = 0,
+                n_sims = 5, measurement_times = seq(0, 24, by = 12),
+                seed = 11)
+p$power
+p$mean_estimate
+}

@@ -23,3 +23,10 @@ For Stan/NIMBLE draws, computes R-hat and effective sample size when the
 \code{coda} inputs are supplied as a list of chains. For nlme fits,
 reports optimization convergence code and random-effects variance.
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+check_convergence(fit)$converged
+# R-hat for a list of scalar chains
+check_convergence(list(rnorm(200), rnorm(200), rnorm(200)))$rhat
+}

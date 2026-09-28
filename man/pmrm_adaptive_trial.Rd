@@ -48,3 +48,9 @@ A list with long-format outcomes \code{$long_data} and final
 Simulates visits sequentially: measure biomarkers with noise, apply the
 dosing rule, simulate progression and terminal events.
 }
+\examples{
+out <- pmrm_adaptive_trial(n_subjects = 12, n_visits = 4, seed = 1)
+head(out$long_data)
+# subjects whose dose was adapted at least once
+table(out$subjects$dose_idx)
+}

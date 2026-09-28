@@ -50,3 +50,12 @@ event type on top of the shared longitudinal mixed-effects submodel.
 Association with the longitudinal process enters through empirical-Bayes
 current value and slope at each subject's event/censoring time.
 }
+\examples{
+fit <- pmrm_competing(updrs ~ time * trt,
+                      surv_formulas = ~ trt,
+                      data = parkinsons_simulated,
+                      event_var = "dropout",
+                      causes = "dropout")
+names(fit$cause_fits)
+summary(fit)$hazard_ratios
+}

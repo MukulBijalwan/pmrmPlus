@@ -13,6 +13,12 @@
 #' @param ... Passed to \code{simulate_progression_trial()}.
 #' @return List with power, mean estimate/SE, bias, MSE, and the
 #'   non-convergence rate.
+#' @examples
+#' p <- power_pmrm(n_per_arm = 30, effect_size = -1.5, delay = 0,
+#'                 n_sims = 5, measurement_times = seq(0, 24, by = 12),
+#'                 seed = 11)
+#' p$power
+#' p$mean_estimate
 #' @export
 power_pmrm <- function(n_per_arm,
                        effect_size = -0.5,
@@ -68,6 +74,12 @@ power_pmrm <- function(n_per_arm,
 #' @param n_grid Grid of per-arm sample sizes to evaluate.
 #' @param ... Arguments passed to \code{power_pmrm()}.
 #' @return List with \code{optimal_n} and a \code{power_curve} data frame.
+#' @examples
+#' ss <- find_sample_size(target_power = 0.8, n_grid = c(25, 50),
+#'                        effect_size = -1.5, delay = 0, n_sims = 5,
+#'                        measurement_times = seq(0, 24, by = 12), seed = 11)
+#' ss$optimal_n
+#' ss$power_curve
 #' @export
 find_sample_size <- function(target_power = 0.8,
                              n_grid = seq(50, 300, by = 25),
@@ -89,6 +101,10 @@ find_sample_size <- function(target_power = 0.8,
 #'   \code{do.call}.
 #' @return A list of simulation arguments.
 #' @rdname scenarios
+#' @examples
+#' scenario_optimistic()
+#' scenario_base()
+#' scenario_pessimistic()
 #' @export
 scenario_base <- function() {
   list(effect_size = -0.5, delay = 6, dropout_rate = 0.15,

@@ -31,3 +31,10 @@ Refits the supplied model on \code{n_boot} datasets simulated from the
 fitted model's estimated parameters (resampling residuals conditional on
 the fixed-effects mean structure).
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+boot <- parametric_bootstrap(fit, n_boot = 5, seed = 1)
+boot$estimate
+boot$ci
+}

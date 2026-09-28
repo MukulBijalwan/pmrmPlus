@@ -46,3 +46,10 @@ Long-format data frame with columns \code{id, time, trt, y}.
 \description{
 Simulate a progression trial
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20,
+                                  effect_size = -0.5, delay = 6,
+                                  times = seq(0, 24, by = 6), seed = 1)
+head(sim)
+aggregate(y ~ trt, data = sim, FUN = mean, na.rm = TRUE)
+}

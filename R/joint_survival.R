@@ -34,6 +34,13 @@
 #' @param ... Additional arguments passed to the fitting engine.
 #' @return Object of class \code{"pmrm_joint"} with elements \code{long_fit},
 #'   \code{surv_fit}, \code{association}, and helper summaries.
+#' @examples
+#' fit <- pmrm_joint(updrs ~ time * trt,
+#'                   Surv(time_to_dropout, dropout) ~ trt,
+#'                   data = parkinsons_simulated,
+#'                   association = "current_value")
+#' class(fit)
+#' fit$assoc_terms
 #' @export
 pmrm_joint <- function(long_formula,
                        surv_formula,
@@ -116,6 +123,17 @@ pmrm_joint <- function(long_formula,
 #'
 #' @param object A \code{pmrm_joint} object.
 #' @param ... Unused.
+#' @return A list with the progression fixed/random effects, the survival
+#'   coefficients, the association structure and its coefficients, and the
+#'   longitudinal/survival AIC values.
+#' @examples
+#' fit <- pmrm_joint(updrs ~ time * trt,
+#'                   Surv(time_to_dropout, dropout) ~ trt,
+#'                   data = parkinsons_simulated,
+#'                   association = "both")
+#' s <- summary(fit)
+#' s$survival
+#' s$association_coefficients
 #' @export
 summary.pmrm_joint <- function(object, ...) {
   list(

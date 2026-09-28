@@ -15,3 +15,8 @@ Data frame with \code{id}, \code{b0} and \code{b1}.
 \description{
 Extract subject-level summary (EB intercept and slope)
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+head(subject_summaries(fit))
+}

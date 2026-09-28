@@ -32,3 +32,6 @@ Data frame of subject-level attributes.
 \description{
 Initialize subjects for an adaptive trial simulation
 }
+\examples{
+initialize_subjects(6, n_visits = 4, seed = 42)
+}

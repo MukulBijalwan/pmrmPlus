@@ -12,6 +12,10 @@
 #' @param lambda Onset rate for the exponential shape.
 #' @return Numeric vector in [0, 1] giving the fraction of the full effect
 #'   realized at each time.
+#' @examples
+#' t <- seq(0, 12, by = 2)
+#' delayed_effect(t, delay = 4, shape = "step")
+#' delayed_effect(t, delay = 0, shape = "exponential", lambda = 0.1)
 #' @export
 delayed_effect <- function(time, trt_time = 0, delay = 0,
                            shape = c("exponential", "step", "linear"),
@@ -51,6 +55,16 @@ delayed_effect <- function(time, trt_time = 0, delay = 0,
 #' @param ... Additional arguments to \code{pmrm_nlme()}.
 #' @return Object of class \code{"pmrm_delayed"} containing the best fit,
 #'   the estimated delay, the profile likelihood, and the delay CI.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
+#'                                   effect_size = -0.8, delay = 6,
+#'                                   times = seq(0, 24, by = 6),
+#'                                   residual_sd = 1.5, random_sd = 0.2, seed = 7)
+#' fit <- pmrm_delayed(y ~ time * trt, data = sim,
+#'                     delay_estimation = "profile",
+#'                     delay_grid = seq(0, 12, by = 4), lambda = 0.5)
+#' fit$delay_estimate
+#' summary(fit)$delay_ci
 #' @export
 pmrm_delayed <- function(formula, data,
                          delay_estimation = c("fixed", "profile", "bayesian"),
@@ -112,6 +126,16 @@ pmrm_delayed <- function(formula, data,
 #' @param object A \code{pmrm_delayed} object.
 #' @param ... Unused.
 #' @return List with fixed effects, delay estimate/CI, and information criteria.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
+#'                                   effect_size = -0.8, delay = 6,
+#'                                   times = seq(0, 24, by = 6), seed = 7)
+#' fit <- pmrm_delayed(y ~ time * trt, data = sim,
+#'                     delay_estimation = "profile",
+#'                     delay_grid = c(0, 6), lambda = 0.5)
+#' s <- summary(fit)
+#' s$delay_estimate
+#' s$delay_ci
 #' @export
 summary.pmrm_delayed <- function(object, ...) {
   fx <- tryCatch(nlme::fixed.effects(object),
@@ -132,6 +156,14 @@ summary.pmrm_delayed <- function(object, ...) {
 #' Print method for delayed-effect fits
 #' @param x A \code{pmrm_delayed} object.
 #' @param ... Passed to print.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
+#'                                   effect_size = -0.8, delay = 6,
+#'                                   times = seq(0, 24, by = 6), seed = 7)
+#' fit <- pmrm_delayed(y ~ time * trt, data = sim,
+#'                     delay_estimation = "profile",
+#'                     delay_grid = c(0, 6), lambda = 0.5)
+#' print(fit)
 #' @export
 print.pmrm_delayed <- function(x, ...) {
   cat("pmrmPlus delayed-effect progression model\n")
@@ -154,6 +186,14 @@ print.pmrm_delayed <- function(x, ...) {
 #' @return A ggplot object (invisibly).
 #' @importFrom ggplot2 ggplot aes geom_line geom_point geom_vline geom_hline
 #'   labs theme_minimal
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
+#'                                   effect_size = -0.8, delay = 6,
+#'                                   times = seq(0, 24, by = 6), seed = 7)
+#' fit <- pmrm_delayed(y ~ time * trt, data = sim,
+#'                     delay_estimation = "profile",
+#'                     delay_grid = c(0, 6), lambda = 0.5)
+#' plot(fit, type = "profile_likelihood")
 #' @export
 plot.pmrm_delayed <- function(x, type = c("trajectory", "profile_likelihood"), ...) {
   type <- match.arg(type)

@@ -10,6 +10,12 @@
 #'   chains).
 #' @param ... Unused.
 #' @return List of diagnostic values.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' check_convergence(fit)$converged
+#' # R-hat for a list of scalar chains
+#' check_convergence(list(rnorm(200), rnorm(200), rnorm(200)))$rhat
 #' @export
 check_convergence <- function(object, ...) {
   UseMethod("check_convergence")

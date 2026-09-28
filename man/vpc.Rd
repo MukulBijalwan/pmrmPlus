@@ -21,3 +21,9 @@ Data frame of observed vs simulated quantiles by time bin.
 \description{
 Visual predictive check (VPC)
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20,
+                                  times = seq(0, 24, by = 6), seed = 2)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+vpc(fit, n_sims = 5, seed = 1)
+}

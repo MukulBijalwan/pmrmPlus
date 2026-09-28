@@ -23,6 +23,14 @@
 #' @param association "current_value", "slope", or "both".
 #' @param ... Additional arguments to \code{pmrm_nlme()}.
 #' @return Object of class \code{"pmrm_competing"}.
+#' @examples
+#' fit <- pmrm_competing(updrs ~ time * trt,
+#'                       surv_formulas = ~ trt,
+#'                       data = parkinsons_simulated,
+#'                       event_var = "dropout",
+#'                       causes = "dropout")
+#' names(fit$cause_fits)
+#' summary(fit)$hazard_ratios
 #' @export
 pmrm_competing <- function(long_formula,
                            surv_formulas = y ~ 1,
@@ -109,6 +117,16 @@ pmrm_competing <- function(long_formula,
 #'
 #' @param object A \code{pmrm_competing} object.
 #' @param ... Unused.
+#' @return A list with the longitudinal fixed effects, the cause labels, the
+#'   cause-specific hazard ratios, and per-cause concordance.
+#' @examples
+#' fit <- pmrm_competing(updrs ~ time * trt,
+#'                       surv_formulas = ~ trt,
+#'                       data = parkinsons_simulated,
+#'                       event_var = "dropout",
+#'                       causes = "dropout")
+#' summary(fit)$fixed_effects
+#' summary(fit)$concordance
 #' @export
 summary.pmrm_competing <- function(object, ...) {
   list(

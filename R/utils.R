@@ -4,6 +4,10 @@
 #'
 #' @param fit A \code{pmrm_nlme} object.
 #' @return Data frame with \code{id}, \code{b0} and \code{b1}.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' head(subject_summaries(fit))
 #' @export
 subject_summaries <- function(fit) {
   eb <- nlme::random.effects(fit)
@@ -15,6 +19,12 @@ subject_summaries <- function(fit) {
 #' @param long_data Long-format data frame.
 #' @param id_var,time_to_event_var,event_var Column names.
 #' @return One-row-per-subject data frame.
+#' @examples
+#' sim <- simulate_joint_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' ev <- to_event_data(sim, id_var = "id",
+#'                     time_to_event_var = "time_to_dropout",
+#'                     event_var = "dropout")
+#' head(ev)
 #' @export
 to_event_data <- function(long_data,
                           id_var = "id",

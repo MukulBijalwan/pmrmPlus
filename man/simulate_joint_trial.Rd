@@ -48,3 +48,10 @@ simulate_joint_trial(
 Progression drives a Weibull hazard for dropout through the current
 latent value, so faster progressors leave earlier.
 }
+\examples{
+sim <- simulate_joint_trial(n_control = 20, n_treatment = 20,
+                            times = seq(0, 24, by = 6), seed = 1)
+head(sim)
+# share of subjects with an observed dropout event
+mean(tapply(sim$dropout, sim$id, function(z) z[1]))
+}

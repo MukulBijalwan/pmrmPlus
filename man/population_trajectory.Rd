@@ -19,3 +19,8 @@ Data frame with columns \code{time}, \code{trt}, \code{predicted}.
 \description{
 Population-level trajectory over a time grid
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- pmrm_nlme(y ~ time * trt, data = sim)
+population_trajectory(fit, times = seq(0, 24, by = 6), trt = c(0, 1))
+}

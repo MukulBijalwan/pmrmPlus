@@ -22,6 +22,10 @@
 #' @param start Optional named starting values for nonlinear shapes.
 #' @param ... Additional arguments passed on to the fitting engine.
 #' @return An object of class \code{"pmrm_nlme"}.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' summary(fit)$tTable
 #' @export
 pmrm_nlme <- function(formula,
                       data,
@@ -134,6 +138,12 @@ default_start <- function(progression, data) {
 #'   (includes empirical-Bayes random effects).
 #' @param ... Unused.
 #' @return Numeric vector of predictions.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' nd <- data.frame(time = c(0, 6, 12, 24), trt = c(0, 0, 1, 1))
+#' predict(fit, newdata = nd)                 # population level
+#' head(predict(fit, level = "individual"))   # subject-specific
 #' @export
 predict.pmrm_nlme <- function(object, newdata, level = c("population", "individual"), ...) {
   level <- match.arg(level)
@@ -176,6 +186,10 @@ predict.pmrm_nlme <- function(object, newdata, level = c("population", "individu
 #' @param times Numeric vector of times.
 #' @param trt Treatment arm value (default 0).
 #' @return Data frame with columns \code{time}, \code{trt}, \code{predicted}.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' population_trajectory(fit, times = seq(0, 24, by = 6), trt = c(0, 1))
 #' @export
 population_trajectory <- function(object, times, trt = 0) {
   nd <- expand.grid(time = times, trt = trt)

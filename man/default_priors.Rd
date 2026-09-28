@@ -18,3 +18,6 @@ Named list of prior family and parameter values for fixed
 \description{
 Default priors for Bayesian progression models
 }
+\examples{
+default_priors(scale = 5)
+}

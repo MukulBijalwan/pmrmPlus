@@ -11,6 +11,19 @@
 
 \item{...}{Unused.}
 }
+\value{
+A list with the longitudinal fixed effects, the cause labels, the
+  cause-specific hazard ratios, and per-cause concordance.
+}
 \description{
 Summarize a competing-risks fit
+}
+\examples{
+fit <- pmrm_competing(updrs ~ time * trt,
+                      surv_formulas = ~ trt,
+                      data = parkinsons_simulated,
+                      event_var = "dropout",
+                      causes = "dropout")
+summary(fit)$fixed_effects
+summary(fit)$concordance
 }

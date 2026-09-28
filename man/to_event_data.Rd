@@ -22,3 +22,10 @@ One-row-per-subject data frame.
 \description{
 Reshape long trial data to per-subject event data
 }
+\examples{
+sim <- simulate_joint_trial(n_control = 20, n_treatment = 20, seed = 1)
+ev <- to_event_data(sim, id_var = "id",
+                    time_to_event_var = "time_to_dropout",
+                    event_var = "dropout")
+head(ev)
+}

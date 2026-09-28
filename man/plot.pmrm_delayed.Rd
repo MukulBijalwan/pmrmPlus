@@ -21,3 +21,12 @@ A ggplot object (invisibly).
 \description{
 Plot a delayed-effect fit
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
+                                  effect_size = -0.8, delay = 6,
+                                  times = seq(0, 24, by = 6), seed = 7)
+fit <- pmrm_delayed(y ~ time * trt, data = sim,
+                    delay_estimation = "profile",
+                    delay_grid = c(0, 6), lambda = 0.5)
+plot(fit, type = "profile_likelihood")
+}

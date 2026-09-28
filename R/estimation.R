@@ -5,6 +5,10 @@
 #' @param model Model family: "nlme", "delayed", or "joint".
 #' @param ... Arguments forwarded to the corresponding fitting function.
 #' @return The fitted model object.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- fit_pmrm("nlme", y ~ time * trt, data = sim)
+#' class(fit)
 #' @export
 fit_pmrm <- function(model = c("nlme", "delayed", "joint"), ...) {
   switch(match.arg(model),
@@ -26,6 +30,12 @@ fit_pmrm <- function(model = c("nlme", "delayed", "joint"), ...) {
 #' @param seed Random seed.
 #' @param level Confidence level.
 #' @return List with \code{estimate}, \code{ci}, and the bootstrap draws.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+#' fit <- pmrm_nlme(y ~ time * trt, data = sim)
+#' boot <- parametric_bootstrap(fit, n_boot = 5, seed = 1)
+#' boot$estimate
+#' boot$ci
 #' @export
 parametric_bootstrap <- function(fit, statistic = function(f) stats::coef(f)[1],
                                  n_boot = 200, seed = NULL, level = 0.95) {

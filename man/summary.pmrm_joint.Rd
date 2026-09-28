@@ -11,6 +11,20 @@
 
 \item{...}{Unused.}
 }
+\value{
+A list with the progression fixed/random effects, the survival
+  coefficients, the association structure and its coefficients, and the
+  longitudinal/survival AIC values.
+}
 \description{
 Summarize a joint model fit
+}
+\examples{
+fit <- pmrm_joint(updrs ~ time * trt,
+                  Surv(time_to_dropout, dropout) ~ trt,
+                  data = parkinsons_simulated,
+                  association = "both")
+s <- summary(fit)
+s$survival
+s$association_coefficients
 }

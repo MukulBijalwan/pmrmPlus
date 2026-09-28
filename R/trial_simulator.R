@@ -14,6 +14,12 @@
 #' @param residual_sd Residual SD.
 #' @param seed Random seed.
 #' @return Long-format data frame with columns \code{id, time, trt, y}.
+#' @examples
+#' sim <- simulate_progression_trial(n_control = 20, n_treatment = 20,
+#'                                   effect_size = -0.5, delay = 6,
+#'                                   times = seq(0, 24, by = 6), seed = 1)
+#' head(sim)
+#' aggregate(y ~ trt, data = sim, FUN = mean, na.rm = TRUE)
 #' @export
 simulate_progression_trial <- function(n_control = 50, n_treatment = 50,
                                        effect_size = -0.5,
@@ -53,6 +59,12 @@ simulate_progression_trial <- function(n_control = 50, n_treatment = 50,
 #' @inheritParams simulate_progression_trial
 #' @param alpha Association of current value with the log-hazard.
 #' @param weibull_scale,weibull_shape Weibull parameters for baseline hazard.
+#' @examples
+#' sim <- simulate_joint_trial(n_control = 20, n_treatment = 20,
+#'                             times = seq(0, 24, by = 6), seed = 1)
+#' head(sim)
+#' # share of subjects with an observed dropout event
+#' mean(tapply(sim$dropout, sim$id, function(z) z[1]))
 #' @export
 simulate_joint_trial <- function(n_control = 50, n_treatment = 50,
                                  effect_size = -0.5, delay = 0,

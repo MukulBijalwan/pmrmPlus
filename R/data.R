@@ -17,6 +17,10 @@
 #' }
 #' @source Simulated with \code{simulate_progression_trial()}; see
 #'   \code{data-raw/create_data.R}.
+#' @examples
+#' head(adni_simulated)
+#' table(adni_simulated$trt)
+#' summary(adni_simulated$adas_cog)
 "adni_simulated"
 
 #' Simulated Parkinson's trial data with informative dropout
@@ -37,4 +41,8 @@
 #' }
 #' @source Simulated with \code{simulate_joint_trial()}; see
 #'   \code{data-raw/create_data.R}.
+#' @examples
+#' head(parkinsons_simulated)
+#' with(parkinsons_simulated, table(trt, dropout))
+#' summary(parkinsons_simulated$updrs)
 "parkinsons_simulated"

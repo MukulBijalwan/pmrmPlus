@@ -17,3 +17,8 @@ The fitted model object.
 \description{
 Unified estimation wrapper
 }
+\examples{
+sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
+fit <- fit_pmrm("nlme", y ~ time * trt, data = sim)
+class(fit)
+}

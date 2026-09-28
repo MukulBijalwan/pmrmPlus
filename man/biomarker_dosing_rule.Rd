@@ -28,3 +28,8 @@ List with \code{new_dose}, \code{new_dose_idx}, and
 Adjusts the dose one step up/down when the measured biomarker falls
 outside the target range, otherwise maintains the current dose.
 }
+\examples{
+biomarker_dosing_rule(130)  # above target range -> step the dose up
+biomarker_dosing_rule(70)   # below target range -> step the dose down
+biomarker_dosing_rule(100)  # inside the range -> keep the current dose
+}
