@@ -157,7 +157,12 @@ predict.pmrm_nlme <- function(object, newdata, level = c("population", "individu
     if (is.null(newdata)) stop("newdata required")
     newdata <- as.data.frame(newdata)
     mm <- stats::model.matrix(delete.response(terms(object)), data = newdata)
-    return(as.vector(mm %*% stats::coef(summary(object))[, 1]))
+    # summary() may dispatch to a pmrm_* method that returns a plain list
+    # (e.g. summary.pmrm_delayed()), so take the fixed effects straight from
+    # the fitted lme object instead.
+    fe <- nlme::fixed.effects(object)
+    if (!identical(colnames(mm), names(fe))) fe <- fe[colnames(mm)]
+    return(as.vector(mm %*% fe))
   }
 
   # nonlinear shapes

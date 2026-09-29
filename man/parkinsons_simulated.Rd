@@ -20,7 +20,7 @@ Simulated with \code{simulate_joint_trial()}; see
   \code{data-raw/create_data.R}.
 }
 \usage{
-data(parkinsons_simulated)
+parkinsons_simulated
 }
 \description{
 Longitudinal UPDRS data from a simulated Parkinson's disease trial in

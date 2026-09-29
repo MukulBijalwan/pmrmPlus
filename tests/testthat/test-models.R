@@ -30,23 +30,69 @@ test_that("pmrm_nlme fits a linear progression model", {
   expect_length(pr, 1)
 })
 
-test_that("pmrm_delayed recovers the delay approximately", {
+test_that("pmrm_delayed recovers the delay", {
   sim <- simulate_progression_trial(n_control = 60, n_treatment = 60,
                                     effect_size = -0.8, delay = 6,
                                     times = seq(0, 24, by = 3),
                                     dropout_rate = 0.1, residual_sd = 1.5,
                                     random_sd = 0.2, seed = 7)
   grid <- seq(0, 15, by = 3)
-  fit <- suppressWarnings(
-    tryCatch(pmrm_delayed(y ~ time * trt, data = sim, delay_grid = grid,
-                          lambda = 0.5),
-             error = function(e) NULL))
-  if (!is.null(fit)) {
-    expect_s3_class(fit, "pmrm_delayed")
-    expect_true(fit$delay_estimate %in% grid)
-    s <- summary(fit)
-    expect_true("delay_estimate" %in% names(s))
-  }
+  fit <- suppressWarnings(pmrm_delayed(y ~ time * trt, data = sim,
+                                        delay_estimation = "profile",
+                                        delay_grid = grid, lambda = 0.2))
+  expect_s3_class(fit, "pmrm_delayed")
+  expect_true(fit$delay_estimate %in% grid)
+  # the treatment effect must enter only through the delayed term, otherwise
+  # the unrestricted treatment terms absorb the delay and the profile
+  # likelihood always peaks at zero delay
+  expect_equal(fit$delay_estimate, 6)
+  expect_true(all(fit$delay_ci %in% grid))
+  expect_equal(nrow(fit$profile_loglik), length(grid))
+
+  s <- summary(fit)
+  expect_equal(s$delay_estimate, fit$delay_estimate)
+  expect_equal(s$delay_ci, fit$delay_ci)
+  # summary() must reach the underlying lme tTable rather than recursing
+  expect_true(is.matrix(s$t_table))
+  expect_true(nrow(s$t_table) >= 2)
+})
+
+test_that("pmrm_delayed recovers a zero-delay truth", {
+  sim <- simulate_progression_trial(n_control = 60, n_treatment = 60,
+                                    effect_size = -0.8, delay = 0,
+                                    times = seq(0, 24, by = 6),
+                                    residual_sd = 1.5, random_sd = 0.2, seed = 7)
+  fit <- suppressWarnings(pmrm_delayed(y ~ time * trt, data = sim,
+                                        delay_estimation = "profile",
+                                        delay_grid = c(0, 6), lambda = 0.2))
+  expect_equal(fit$delay_estimate, 0)
+})
+
+test_that("pmrm_delayed strips treatment terms so the delay is identifiable", {
+  f <- pmrmPlus:::strip_treatment_terms(y ~ time * trt + age, "trt")
+  expect_equal(sort(attr(terms(f), "term.labels")),
+               sort(c("time", "age", "trt_eff")))
+  # a formula with no treatment term keeps everything and just adds trt_eff
+  g <- pmrmPlus:::strip_treatment_terms(y ~ time, "trt")
+  expect_equal(attr(terms(g), "term.labels"), c("time", "trt_eff"))
+  # an interaction is stripped as well
+  h <- pmrmPlus:::strip_treatment_terms(y ~ time + trt:age, "trt")
+  expect_equal(attr(terms(h), "term.labels"), c("time", "trt_eff"))
+})
+
+test_that("predict() and plot() work on a pmrm_delayed fit", {
+  sim <- simulate_progression_trial(n_control = 30, n_treatment = 30,
+                                    effect_size = -0.8, delay = 6,
+                                    times = seq(0, 24, by = 6), seed = 7)
+  fit <- suppressWarnings(pmrm_delayed(y ~ time * trt, data = sim,
+                                        delay_estimation = "profile",
+                                        delay_grid = c(0, 6), lambda = 0.2))
+  nd <- nlme::getData(fit)
+  pr <- predict(fit, newdata = nd, level = "population")
+  expect_length(pr, nrow(nd))
+  expect_true(all(is.finite(pr)))
+  expect_error(plot(fit, type = "profile_likelihood"), NA)
+  expect_error(plot(fit, type = "trajectory"), NA)
 })
 
 test_that("biomarker dosing rule steps dose correctly", {

@@ -20,7 +20,7 @@ Simulated with \code{simulate_progression_trial()}; see
   \code{data-raw/create_data.R}.
 }
 \usage{
-data(adni_simulated)
+adni_simulated
 }
 \description{
 Longitudinal data from a simulated ADNI-style Alzheimer's disease trial

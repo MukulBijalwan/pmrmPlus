@@ -20,6 +20,7 @@ data(adni_simulated)
 
 fit <- tryCatch(
   pmrm_delayed(adas_cog ~ time * trt, data = adni_simulated,
+               subject_var = "rid",
                delay_estimation = "profile",
                delay_grid = seq(0, 18, by = 3), lambda = 0.5),
   error = function(e) e

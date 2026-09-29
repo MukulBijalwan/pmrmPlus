@@ -17,7 +17,9 @@ pmrm_delayed(
 )
 }
 \arguments{
-\item{formula}{LME-style formula, e.g. \code{y ~ time * trt}.}
+\item{formula}{LME-style formula, e.g. \code{y ~ time * trt}. Terms
+involving the treatment indicator are replaced by the delayed treatment
+term; the remaining terms specify the common progression model.}
 
 \item{data}{Long-format data frame.}
 
@@ -41,11 +43,28 @@ Object of class \code{"pmrm_delayed"} containing the best fit,
   the estimated delay, the profile likelihood, and the delay CI.
 }
 \description{
-The delayed effect enters as \code{delta * Trt_i * d(t_ij)} where d() is a
-fractional onset function. When \code{delay_estimation = "profile"}, the
-delay is estimated by grid search over \code{delay_grid}, selecting the
-value maximizing log-likelihood; an approximate confidence set is derived
-from the chi-squared threshold (log-lik drop of qchisq(0.95, 1)/2).
+The treatment effect enters the model exclusively through a delayed term,
+\code{delta * Trt_i * t_ij * d(t_ij)}, where \code{d()} is a fractional
+onset function: treatment terms already present in \code{formula} (such as
+the \code{trt} and \code{time:trt} terms of \code{y ~ time * trt}) are
+replaced by this term. Keeping them alongside the delayed term would let an
+unrestricted treatment effect absorb the delay and make it unidentifiable,
+in which case the profile likelihood always peaks at zero delay. Because
+the delayed term is proportional to \code{time}, \code{delta} is the
+treatment effect on the progression slope at full onset.
+}
+\details{
+The data must contain a treatment indicator column named \code{trt} (any
+case), which is what identifies the treatment terms to replace. Pass other
+\code{pmrm_nlme()} options -- most importantly \code{subject_var} and
+\code{time_var} -- through \code{...}.
+
+When \code{delay_estimation = "profile"}, the delay is estimated by grid
+search over \code{delay_grid}, selecting the value maximizing
+log-likelihood; an approximate confidence set is derived from the
+chi-squared threshold (log-lik drop of qchisq(0.95, 1)/2). All candidates
+use the same fixed-effects structure, so the REML log-likelihoods are
+comparable across the grid.
 }
 \examples{
 sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
@@ -54,7 +73,7 @@ sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
                                   residual_sd = 1.5, random_sd = 0.2, seed = 7)
 fit <- pmrm_delayed(y ~ time * trt, data = sim,
                     delay_estimation = "profile",
-                    delay_grid = seq(0, 12, by = 4), lambda = 0.5)
+                    delay_grid = c(0, 6, 12), lambda = 0.2)
 fit$delay_estimate
 summary(fit)$delay_ci
 }

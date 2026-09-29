@@ -27,6 +27,6 @@ sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
                                   times = seq(0, 24, by = 6), seed = 7)
 fit <- pmrm_delayed(y ~ time * trt, data = sim,
                     delay_estimation = "profile",
-                    delay_grid = c(0, 6), lambda = 0.5)
+                    delay_grid = c(0, 6), lambda = 0.2)
 plot(fit, type = "profile_likelihood")
 }
