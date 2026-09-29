@@ -26,7 +26,11 @@ default_priors <- function(scale = 1) {
 # Stan compilation & fitting wrappers (require rstan; guarded at runtime)
 
 stan_file <- function(name) {
-  system.file("stan", name, package = "pmrmPlus", mustWork = FALSE)
+  ## mustWork = TRUE: on a case-sensitive filesystem (Linux, and the CRAN
+  ## M1mac builders) a mismatched name returns "" silently when mustWork is
+  ## FALSE, and the caller then dies on readLines("") with the unhelpful
+  ## "cannot open file ''". Error at the lookup instead.
+  system.file("stan", name, package = "pmrmPlus", mustWork = TRUE)
 }
 
 has_rstan <- function() requireNamespace("rstan", quietly = TRUE)

@@ -1,0 +1,58 @@
+# Produces the cross-platform R CMD check evidence that cannot be generated on
+# a single Windows box: real Linux and macOS (apple-silicon) builders.
+name: R-CMD-check
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Mondays at 06:00 UTC -- catches breakage introduced by R or nlme updates.
+    - cron: "0 6 * * 1"
+
+permissions: all
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (R ${{ matrix.config.r }})
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # apple-silicon macOS: closest match to CRAN's M1mac check
+          - {os: macos-latest,   r: "release"}
+          # Linux, R-devel: what CRAN runs first, and it is the strictest
+          - {os: ubuntu-latest,  r: "devel", http-user-agent: "release"}
+          - {os: ubuntu-latest,  r: "release"}
+          - {os: ubuntu-latest,  r: "oldrel-1"}
+          - {os: windows-latest, r: "release"}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+      # rstan is only used behind a requireNamespace() guard and takes ~20 min
+      # to build, so do not let its absence fail the check.
+      _R_CHECK_FORCE_SUGGESTS_: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          args: 'c("--no-manual", "--as-cran")'
