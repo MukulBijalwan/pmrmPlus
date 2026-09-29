@@ -66,3 +66,8 @@ fit <- pmrm_joint(updrs ~ time * trt,
 class(fit)
 fit$assoc_terms
 }
+\references{
+Rizopoulos D (2012). Joint Models for Longitudinal and
+  Time-to-Event Data: With Applications in R. Chapman and Hall/CRC
+  Biostatistics Series. ISBN 978-1-4398-7286-4.
+}

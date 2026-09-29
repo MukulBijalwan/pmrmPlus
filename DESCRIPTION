@@ -14,7 +14,14 @@ Description: Extended progression models for repeated measures in progressive
     onset estimation by profile likelihood, joint longitudinal-survival
     models for informative dropout, competing-risks extensions,
     biomarker-informed adaptive dosing rules, and simulation-based power
-    and sample-size calculation.
+    and sample-size calculation. The progression-model view of treatment
+    effects, in which effects are characterised on the underlying disease
+    trajectory rather than as additive shifts on the outcome scale, follows
+    Raket (2022) <doi:10.1002/sim.9581>. The nonlinear mixed-effects
+    machinery is built on the 'nlme' implementation described by Pinheiro
+    and Bates (2000, ISBN 978-0-387-98957-0), and the joint modelling of
+    longitudinal and time-to-event data follows Rizopoulos (2012,
+    ISBN 978-1-4398-7286-4).
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

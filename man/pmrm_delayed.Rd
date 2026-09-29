@@ -77,3 +77,8 @@ fit <- pmrm_delayed(y ~ time * trt, data = sim,
 fit$delay_estimate
 summary(fit)$delay_ci
 }
+\references{
+Raket LL (2022). Progression models for repeated measures:
+  Estimating novel treatment effects in progressive diseases. Statistics
+  in Medicine. doi:10.1002/sim.9581.
+}

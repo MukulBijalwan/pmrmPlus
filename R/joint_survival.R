@@ -34,6 +34,9 @@
 #' @param ... Additional arguments passed to the fitting engine.
 #' @return Object of class \code{"pmrm_joint"} with elements \code{long_fit},
 #'   \code{surv_fit}, \code{association}, and helper summaries.
+#' @references Rizopoulos D (2012). Joint Models for Longitudinal and
+#'   Time-to-Event Data: With Applications in R. Chapman and Hall/CRC
+#'   Biostatistics Series. ISBN 978-1-4398-7286-4.
 #' @examples
 #' fit <- pmrm_joint(updrs ~ time * trt,
 #'                   Surv(time_to_dropout, dropout) ~ trt,

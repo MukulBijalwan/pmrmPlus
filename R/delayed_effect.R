@@ -99,6 +99,9 @@ stop_fit_failed <- function(what, first_error = NULL) {
 #' @param ... Additional arguments to \code{pmrm_nlme()}.
 #' @return Object of class \code{"pmrm_delayed"} containing the best fit,
 #'   the estimated delay, the profile likelihood, and the delay CI.
+#' @references Raket LL (2022). Progression models for repeated measures:
+#'   Estimating novel treatment effects in progressive diseases. Statistics
+#'   in Medicine. doi:10.1002/sim.9581.
 #' @examples
 #' sim <- simulate_progression_trial(n_control = 40, n_treatment = 40,
 #'                                   effect_size = -0.8, delay = 6,
@@ -122,7 +125,13 @@ pmrm_delayed <- function(formula, data,
   shape <- match.arg(shape)
 
   if (delay_estimation == "bayesian") {
-    warning("Bayesian delayed-effect fitting requires rstan; using profile likelihood.")
+    ## Wording note: this branch never calls rstan, so saying "requires
+    ## rstan" wrongly implies installing rstan would enable it. The
+    ## implementation simply does not exist yet; say so, as pmrm_joint()
+    ## does for surv_model = "stan_jm".
+    warning("Bayesian delayed-effect estimation is not implemented; ",
+            "falling back to profile likelihood. Use ",
+            "delay_estimation = \"profile\" explicitly to silence this warning.")
     delay_estimation <- "profile"
   }
 

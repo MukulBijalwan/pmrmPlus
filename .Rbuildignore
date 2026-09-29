@@ -7,4 +7,5 @@
 ^pmrmPlus_[0-9.]+\.tar\.gz$
 ^pmrmPlus\.Rcheck$
 Rplots\.pdf$
+\.log$
 

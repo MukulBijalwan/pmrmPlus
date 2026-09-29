@@ -54,3 +54,7 @@ sim <- simulate_progression_trial(n_control = 20, n_treatment = 20, seed = 1)
 fit <- pmrm_nlme(y ~ time * trt, data = sim)
 summary(fit)$tTable
 }
+\references{
+Pinheiro JC, Bates DM (2000). Mixed-Effects Models in S and
+  S-PLUS. Springer Statistics and Computing. ISBN 978-0-387-98957-0.
+}
