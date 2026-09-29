@@ -4,8 +4,8 @@
 ^README\.Rmd$
 ^\.kilo$
 ^\.github$
-^pmrmPlus_[0-9.]+\.tar\.gz$
-^pmrmPlus\.Rcheck$
+^progme_[0-9.]+\.tar\.gz$
+^progme\.Rcheck$
 Rplots\.pdf$
 \.log$
 

@@ -1,4 +1,4 @@
-# pmrmPlus NAMESPACE
+# progme NAMESPACE
 
 ## models
 export(pmrm_nlme)

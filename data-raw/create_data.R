@@ -1,8 +1,8 @@
-# Data creation script for pmrmPlus simulated datasets
+# Data creation script for progme simulated datasets
 # Run once from the package root:
 #   Rscript data-raw/create_data.R
 
-library(pmrmPlus)
+library(progme)
 
 set.seed(2024)
 

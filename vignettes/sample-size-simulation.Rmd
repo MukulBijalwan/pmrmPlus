@@ -12,7 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
 ```{r setup}
-library(pmrmPlus)
+library(progme)
 ```
 
 Ignoring a 6-month delayed onset inflates the apparent treatment effect

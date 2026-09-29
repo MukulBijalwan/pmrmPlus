@@ -30,7 +30,7 @@ stan_file <- function(name) {
   ## M1mac builders) a mismatched name returns "" silently when mustWork is
   ## FALSE, and the caller then dies on readLines("") with the unhelpful
   ## "cannot open file ''". Error at the lookup instead.
-  system.file("stan", name, package = "pmrmPlus", mustWork = TRUE)
+  system.file("stan", name, package = "progme", mustWork = TRUE)
 }
 
 has_rstan <- function() requireNamespace("rstan", quietly = TRUE)

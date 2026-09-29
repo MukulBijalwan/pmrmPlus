@@ -15,7 +15,7 @@ This vignette analyzes a simulated ADNI-style trial using
 `pmrm_delayed()` with profile-likelihood delay estimation.
 
 ```{r setup}
-library(pmrmPlus)
+library(progme)
 data(adni_simulated)
 
 fit <- tryCatch(

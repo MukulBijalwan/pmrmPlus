@@ -69,14 +69,14 @@ test_that("pmrm_delayed recovers a zero-delay truth", {
 })
 
 test_that("pmrm_delayed strips treatment terms so the delay is identifiable", {
-  f <- pmrmPlus:::strip_treatment_terms(y ~ time * trt + age, "trt")
+  f <- progme:::strip_treatment_terms(y ~ time * trt + age, "trt")
   expect_equal(sort(attr(terms(f), "term.labels")),
                sort(c("time", "age", "trt_eff")))
   # a formula with no treatment term keeps everything and just adds trt_eff
-  g <- pmrmPlus:::strip_treatment_terms(y ~ time, "trt")
+  g <- progme:::strip_treatment_terms(y ~ time, "trt")
   expect_equal(attr(terms(g), "term.labels"), c("time", "trt_eff"))
   # an interaction is stripped as well
-  h <- pmrmPlus:::strip_treatment_terms(y ~ time + trt:age, "trt")
+  h <- progme:::strip_treatment_terms(y ~ time + trt:age, "trt")
   expect_equal(attr(terms(h), "term.labels"), c("time", "trt_eff"))
 })
 
@@ -181,7 +181,7 @@ test_that("nonlinear progression shapes fit with subject-level random effects", 
 test_that("summary() dispatches for joint and competing-risks fits", {
   # Regression: summary.pmrm_joint / summary.pmrm_competing were defined but
   # never registered, so summary() fell through to summary.default.
-  data(parkinsons_simulated, package = "pmrmPlus")
+  data(parkinsons_simulated, package = "progme")
   fit <- tryCatch(
     suppressWarnings(pmrm_joint(
       updrs ~ time * trt,

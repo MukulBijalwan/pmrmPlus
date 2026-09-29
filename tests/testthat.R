@@ -1,4 +1,4 @@
 library(testthat)
-library(pmrmPlus)
+library(progme)
 
-test_check("pmrmPlus")
+test_check("progme")

@@ -1,4 +1,4 @@
-# pmrmPlus
+# progme
 
 Extended Progression Models for Repeated Measures.
 
@@ -12,13 +12,13 @@ power/sample-size calculation.
 
 ```r
 # install.packages("remotes")
-remotes::install_github("MukulBijalwan/pmrmPlus")
+remotes::install_github("MukulBijalwan/progme")
 ```
 
 ## Quick start
 
 ```r
-library(pmrmPlus)
+library(progme)
 
 # Simulate a trial with a 6-month delayed treatment effect
 sim <- simulate_progression_trial(n_control = 60, n_treatment = 60,

@@ -16,7 +16,7 @@ longitudinal model is biased. `pmrm_joint()` links the two processes
 through a shared association structure.
 
 ```{r setup}
-library(pmrmPlus)
+library(progme)
 data(parkinsons_simulated)
 
 fit <- tryCatch(

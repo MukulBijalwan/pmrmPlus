@@ -243,7 +243,7 @@ summary.pmrm_delayed <- function(object, ...) {
 #' print(fit)
 #' @export
 print.pmrm_delayed <- function(x, ...) {
-  cat("pmrmPlus delayed-effect progression model\n")
+  cat("progme delayed-effect progression model\n")
   cat("Progression shape :", attr(x, "progression"), "\n")
   cat("Estimated delay   :", round(x$delay_estimate, 3), "\n")
   if (!is.null(x$delay_ci)) {

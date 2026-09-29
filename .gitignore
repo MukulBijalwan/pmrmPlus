@@ -3,6 +3,6 @@
 .RData
 .Rproj.user
 .DS_Store
-pmrmPlus.Rcheck/
-pmrmPlus_*.tar.gz
+progme.Rcheck/
+progme_*.tar.gz
 Rplots.pdf
