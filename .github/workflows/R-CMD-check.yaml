@@ -11,7 +11,14 @@ on:
     # Mondays at 06:00 UTC -- catches breakage introduced by R or nlme updates.
     - cron: "0 6 * * 1"
 
-permissions: all
+# Not a legal value: GitHub accepts only the scalars "read-all" / "write-all",
+# or an explicit map of scopes. A workflow-level schema error fails the run
+# before any job is created, so run #1 died with zero jobs and no logs at all.
+# Scoped to what this job actually does: check out the source, and upload the
+# check-output snapshots via actions/upload-artifact (which needs actions: write).
+permissions:
+  contents: read
+  actions: write
 
 jobs:
   R-CMD-check:
@@ -31,10 +38,12 @@ jobs:
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
+      # Quoted, because YAML 1.1 reads bare yes/no as booleans and would hand R
+      # the string "true"/"FALSE" by accident rather than by intent.
+      R_KEEP_PKG_SOURCE: "true"
       # rstan is only used behind a requireNamespace() guard and takes ~20 min
       # to build, so do not let its absence fail the check.
-      _R_CHECK_FORCE_SUGGESTS_: false
+      _R_CHECK_FORCE_SUGGESTS_: "false"
 
     steps:
       - uses: actions/checkout@v4
